@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datphi Coffee | Thương hiệu cà phê Việt</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-text">DATPHI COFFEE</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="#home" class="active">TRANG CHỦ</a>
+        <a href="#shops">CỬA HÀNG</a>
+        <a href="#menu">THỰC ĐƠN</a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- User Actions -->
+        <span id="userGreeting" class="user-greeting hidden">Xin chào</span>
+        <button id="loginBtn" class="btn btn-outline" onclick="openAuthModal('login')">Đăng Nhập</button>
+        <button id="logoutBtn" class="btn btn-outline hidden" onclick="logout()">Đăng Xuất</button>
+
+        <!-- Cart Button in Header -->
+        <button class="header-cart-btn" id="cartBtn" onclick="toggleCart()">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-text">Giỏ hàng</span>
+          <span class="cart-badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Secondary Red Nav Bar -->
+  <div class="secondary-nav">
+    <div class="nav-container">
+      <a href="#menu">CÀ PHÊ</a>
+      <a href="#menu">TRÀ</a>
+      <a href="#menu">FREEZE</a>
+      <a href="#menu">BÁNH NGỌT</a>
+      <a href="#menu">VỀ CHÚNG TÔI</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Hero Banner Section -->
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">KHÁM PHÁ <br /><span class="accent">HƯƠNG VỊ PHONG PHÚ</span></h1>
+        <p class="hero-subtitle">Từ những hạt cà phê hảo hạng vùng cao nguyên Việt Nam, Datphi Coffee mang đến cho bạn
+          không chỉ là thức uống, mà còn là văn hóa.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary btn-large"
+            onclick="document.getElementById('menu').scrollIntoView({behavior: 'smooth'})">Mua Ngay</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Shops Section -->
+    <section id="shops" class="section">
+      <div class="section-header">
+        <h2 class="section-title">HỆ THỐNG CỬA HÀNG</h2>
+        <div class="section-divider"></div>
+        <p class="section-desc">Tìm cửa hàng gần bạn nhất.</p>
+      </div>
+      <div class="shop-gallery" id="shopGrid">
+        <div class="loader">Đang tải cửa hàng...</div>
+      </div>
+    </section>
+
+    <!-- Menu Section (Drinks) -->
+    <section id="menu" class="section has-sidebar">
+      <!-- Sidebar Categories -->
+      <aside class="menu-sidebar">
+        <h3 class="sidebar-title">DANH MỤC</h3>
+        <ul class="category-list" id="categoryFilters">
+          <li><button class="filter-btn active">Tất cả</button></li>
+          <li><button class="filter-btn">Cà phê</button></li>
+          <li><button class="filter-btn">Trà</button></li>
+          <li><button class="filter-btn">Nước ép</button></li>
+        </ul>
+      </aside>
+
+      <!-- Main Drinks Layout -->
+      <div class="menu-content">
+        <div class="section-header menu-header">
+          <h2 class="section-title">THỰC ĐƠN DATPHI</h2>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="drink-gallery" id="drinkGrid">
+          <div class="loader">Đang tải thực đơn...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Modal / Sidebar -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <aside class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3>GIỎ HÀNG CỦA BẠN</h3>
+      <button class="close-btn" onclick="toggleCart()">&times;</button>
+    </div>
+
+    <div class="cart-items" id="cartItems">
+      <div class="empty-cart">Giỏ hàng của bạn đang trống.</div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Tổng cộng:</span>
+        <span class="accent cart-total-value" id="cartTotalValue">0đ</span>
+      </div>
+      <button class="btn btn-primary btn-block btn-pay" id="checkoutBtn" onclick="checkout()">Thanh Toán</button>
+    </div>
+  </aside>
+
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="authModal" onclick="closeModal(event)">
+    <div class="modal-content fade-in">
+      <div class="modal-header">
+        <h3 id="authTitle">Chào Mừng Trở Lại</h3>
+        <button class="close-btn"
+          onclick="document.getElementById('authModal').classList.remove('active')">&times;</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" class="form-input" required placeholder="name@example.com">
+          </div>
+          <div class="form-group">
+            <label>Mật Khẩu</label>
+            <input type="password" id="loginPassword" class="form-input" required placeholder="••••••••">
+          </div>
+          <div id="loginError" class="error-msg hidden"></div>
+          <button type="submit" class="btn btn-primary btn-block">Đăng Nhập</button>
+          <p class="auth-toggle-text">Chưa có tài khoản? <a href="#" onclick="openAuthModal('signup')">Đăng ký</a></p>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" class="auth-form hidden" onsubmit="handleSignup(event)">
+          <div class="form-group">
+            <label>Tên</label>
+            <input type="text" id="signupName" class="form-input" required placeholder="Nguyễn Văn A">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="signupEmail" class="form-input" required placeholder="name@example.com">
+          </div>
+          <div class="form-group">
+            <label>Mật Khẩu</label>
+            <input type="password" id="signupPassword" class="form-input" required placeholder="••••••••">
+          </div>
+          <div class="form-group">
+            <label>Vai Trò</label>
+            <select id="signupRole" class="form-input">
+              <option value="Customer">Khách Hàng</option>
+              <option value="Barista">Pha Chế</option>
+              <option value="Rider">Giao Hàng</option>
+            </select>
+          </div>
+          <div id="signupError" class="error-msg hidden"></div>
+          <button type="submit" class="btn btn-primary btn-block">Đăng Ký</button>
+          <p class="auth-toggle-text">Đã có tài khoản? <a href="#" onclick="openAuthModal('login')">Đăng nhập</a></p>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- API Status Indicator -->
+  <div class="api-status-toast" id="apiStatus">
+    <span class="status-dot"></span>
+    <span class="status-text" id="apiStatusText">Trạng thái</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

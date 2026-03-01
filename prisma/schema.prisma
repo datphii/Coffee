@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String  @unique
+  phone    String?
+  password String
+  address  String?
+  role     String  @default("Customer")
+
+  orders   Order[]
+}
+
+model Shop {
+  id       Int     @id @default(autoincrement())
+  name     String
+  rating   Decimal @default(0.0)
+  location String
+  is_open  Boolean @default(false)
+
+  drinks   Drink[]
+  orders   Order[]
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  icon String
+
+  drinks Drink[]
+}
+
+model Drink {
+  id             Int     @id @default(autoincrement())
+  name           String
+  description    String?
+  price          Decimal
+  shop_id        Int
+  category_id    Int
+  stock_quantity Int     @default(0)
+
+  shop      Shop        @relation(fields: [shop_id], references: [id])
+  category  Category    @relation(fields: [category_id], references: [id])
+  orderItems OrderItem[]
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  shop_id     Int
+  status      String   @default("Pending")
+  total_price Decimal
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  user       User        @relation(fields: [user_id], references: [id])
+  shop       Shop        @relation(fields: [shop_id], references: [id])
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id             Int     @id @default(autoincrement())
+  order_id       Int
+  drink_id       Int
+  quantity       Int
+  price_per_unit Decimal
+
+  order Order @relation(fields: [order_id], references: [id])
+  drink Drink @relation(fields: [drink_id], references: [id])
+}

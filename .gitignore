@@ -1,0 +1,13 @@
+node_modules/
+dist/
+dev.db
+*.log
+.env
+build_err.txt
+jest_err.txt
+jest_out.txt
+out.txt
+out_test.txt
+prisma_out.txt
+seed_out.txt
+ts_errors.txt
