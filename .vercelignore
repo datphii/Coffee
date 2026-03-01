@@ -1,0 +1,5 @@
+dev.db
+*.log
+.env
+tests/
+jest_out.txt
